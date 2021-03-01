@@ -1,0 +1,20 @@
+name: CI
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Docker login
+        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
+        
+      - name: Docker build
+        run: docker build -t gindox/notejamnano:2004 .
+        
+      - name: Docker build
+        run: docker push gindox/notejamnano:2004
