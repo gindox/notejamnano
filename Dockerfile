@@ -1,12 +1,12 @@
-FROM mcr.microsoft.com/windows/servercore:2004 as installer
-
-RUN powershell "(New-Object System.Net.WebClient).DownloadFile('https://nodejs.org/dist/v15.10.0/node-v15.10.0-win-x64.zip', 'c:\nodejs.zip')" 
-
-RUN powershell "Expand-Archive nodejs.zip -DestinationPath C:\; Rename-Item 'C:\\node-v15.10.0-win-x64' c:\nodejs"
-
 FROM mcr.microsoft.com/windows/nanoserver:2004
 
-COPY --from=installer C:/nodejs/ C:/Windows/System32/
+USER Administrator
+
+RUN curl -o c:\nodejs.zip https://nodejs.org/dist/v15.10.0/node-v15.10.0-win-x64.zip
+
+RUN tar -xf c:\nodejs.zip -C C:\Windows\System32 --strip 1
+
+RUN del c:\nodejs.zip
 
 WORKDIR /app
 
