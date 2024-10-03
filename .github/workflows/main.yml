@@ -1,20 +1,29 @@
-name: CI
+name: docker ghcr package
+
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build:
-    runs-on: self-hosted
+  build-and-push:
+    runs-on: windows-2022
+    permissions: 
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write      
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Docker login
-        run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
+        run: docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
         
       - name: Docker build
-        run: docker build -t gindox/notejamnano:2004 .
+        run: docker build -t ghcr.io/gindox/notejamnano/notejamnano:ltsc2022 .
         
       - name: Docker build
-        run: docker push gindox/notejamnano:2004
+        run: docker push ghcr.io/gindox/notejamnano/notejamnano:ltsc2022
